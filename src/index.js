@@ -13,84 +13,81 @@ document.addEventListener("DOMContentLoaded", () => {
       toyFormContainer.style.display = "none";
     }
   })
-      //add new toy (NOT DOING POST JUST MANIP DOM)
-  const toyForm = document.querySelector(".add-toy-form")
   
-    toyForm.addEventListener("submit", (e)=>{
-        e.preventDefault()
-        const newToyObj = {
-          name: toyForm.name.value,
-          image: toyForm.image.value,
-          likes: 0
-        }
-        addToyInfo(newToyObj)
-    });
-
-
-  //get the images
   fetch("http://localhost:3000/toys")
     .then((resp)=> resp.json())
-    .then((toys)=> {
-      toys.forEach(addToyInfo)
+    .then((toys)=>{
+      toys.forEach(uploadToys)
     })
-  
-  function addToyInfo(toy){
-      //create and append card
-      const toyCollection = document.getElementById("toy-collection")
-      const toyCard = document.createElement("div")
-      toyCard.className= "card"
-      toyCollection.append(toyCard)
 
-      //create elements
-      const toyName = document.createElement("h2")
-      toyName.innerText = toy.name
+  function uploadToys(toy){
+    const toyCollection = document.getElementById("toy-collection")
+    const toyCard = document.createElement("toyCard")
+    toyCard.className = "card"
+    toyCollection.append(toyCard)
 
-      const toyImage = document.createElement("img")
-      toyImage.src = toy.image
-      toyImage.className = "toy-avatar"
+    //toy name
+    const toyName = document.createElement("h2")
+    toyName.innerText = toy.name
+    toyCard.append(toyName)
 
-      const toyLikes = document.createElement("p")
-      toyLikes.innerText = toy.likes + " Likes"
+    //toy image
+    const toyImage = document.createElement("img")
+    toyImage.className = "toy-avatar"
+    toyImage.src = toy.image
+    toyCard.append(toyImage)
 
-      const likeButton = document.createElement("button")
-      likeButton.innerText = "like"
-      likeButton.className = "like-btn"
-      likeButton.id = toy.likes
+    //number of likes
+    const likeCount = document.createElement("p")
+    likeCount.innerText = toy.likes + " likes"
+    toyCard.append(likeCount)
 
-      //add to card
-      toyCard.append(toyName, toyImage, toyLikes, likeButton)
+    //increase like button
+    const incLikeButton = document.createElement("button")
+    incLikeButton.id = toy.id
+    incLikeButton.className = "like-btn"
+    incLikeButton.innerText = "like"
+    toyCard.append(incLikeButton)
 
-      //increasing likes
-      likeButton.addEventListener("click", ()=> {
-        toy.likes = toy.likes + 1
-        return toyLikes.innerText = toy.likes + " Likes"
-      })
+    //decrease like button
+    const decLikeButton = document.createElement("button")
+    decLikeButton.id = toy.id
+    decLikeButton.className = "like-btn"
+    decLikeButton.innerText = "dislike"
+    toyCard.append(decLikeButton)
+
+    //increase likes
+    incLikeButton.addEventListener("click", ()=>{
+      toy.likes = toy.likes + 1
+      likeCount.innerText = toy.likes + " likes"
+    })
+
+    //decrease likes
+    decLikeButton.addEventListener("click", ()=>{
+      console.log("click")
+      if (toy.likes> 0) {
+        toy.likes = toy.likes - 1
+      } else {toy.likes = 0}
+      likeCount.innerText = toy.likes + " likes"
+    })
+      // //click to show back of card?
+      // toyName.addEventListener("click", ()=>{
+      //   toyCard.innerHTML= ""
+      // })
+  }
+
+  //submit form
+  const newToyForm = document.querySelector(".add-toy-form")
+  const inputTextArray = document.querySelectorAll(".input-text")
+  newToyForm.addEventListener("submit", (e)=>{
+    e.preventDefault()
+    const newToyObj ={
+      name: inputTextArray[0].value,
+      image: inputTextArray[1].value,
+      likes: 0
     }
+    uploadToys(newToyObj)
+  })
+  
 
-});
-
-
-
-  //THIS IS ADDING TO THE JSON BUT NOT TO THE PAGE...UNLESS I REFRESH IT
-  // const toyForm = document.querySelector(".add-toy-form")
-  // toyForm.addEventListener("submit", function(e){
-  //   e.preventDefault()
-  //   const inputFields = document.querySelectorAll(".input-text")
-  //   const newToyName = inputFields[0].value
-  //   const newToyImage = inputFields[1].value
-  //   const configObj={
-  //     method: "POST",
-  //     headers:{
-  //       'Content-Type': 'application/json',
-  //       'Accept': 'application/json',
-  //     },
-  //     body: JSON.stringify({
-  //       name: newToyName,
-  //       image: newToyImage,
-  //       likes: 3
-  //     })
-  //   }
-
-  //   fetch("http://localhost:3000/toys", configObj)
-  //   toyForm.reset();
-  // })
+})

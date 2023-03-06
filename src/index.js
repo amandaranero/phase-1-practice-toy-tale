@@ -13,81 +13,91 @@ document.addEventListener("DOMContentLoaded", () => {
       toyFormContainer.style.display = "none";
     }
   })
-  
-  fetch("http://localhost:3000/toys")
-    .then((resp)=> resp.json())
-    .then((toys)=>{
-      toys.forEach(uploadToys)
-    })
 
-  function uploadToys(toy){
-    const toyCollection = document.getElementById("toy-collection")
-    const toyCard = document.createElement("toyCard")
-    toyCard.className = "card"
-    toyCollection.append(toyCard)
-
-    //toy name
-    const toyName = document.createElement("h2")
-    toyName.innerText = toy.name
-    toyCard.append(toyName)
-
-    //toy image
-    const toyImage = document.createElement("img")
-    toyImage.className = "toy-avatar"
-    toyImage.src = toy.image
-    toyCard.append(toyImage)
-
-    //number of likes
-    const likeCount = document.createElement("p")
-    likeCount.innerText = toy.likes + " likes"
-    toyCard.append(likeCount)
-
-    //increase like button
-    const incLikeButton = document.createElement("button")
-    incLikeButton.id = toy.id
-    incLikeButton.className = "like-btn"
-    incLikeButton.innerText = "like"
-    toyCard.append(incLikeButton)
-
-    //decrease like button
-    const decLikeButton = document.createElement("button")
-    decLikeButton.id = toy.id
-    decLikeButton.className = "like-btn"
-    decLikeButton.innerText = "dislike"
-    toyCard.append(decLikeButton)
-
-    //increase likes
-    incLikeButton.addEventListener("click", ()=>{
-      toy.likes = toy.likes + 1
-      likeCount.innerText = toy.likes + " likes"
-    })
-
-    //decrease likes
-    decLikeButton.addEventListener("click", ()=>{
-      console.log("click")
-      if (toy.likes> 0) {
-        toy.likes = toy.likes - 1
-      } else {toy.likes = 0}
-      likeCount.innerText = toy.likes + " likes"
-    })
-      // //click to show back of card?
-      // toyName.addEventListener("click", ()=>{
-      //   toyCard.innerHTML= ""
-      // })
-  }
-
-  //submit form
+  //new TOY
   const newToyForm = document.querySelector(".add-toy-form")
-  const inputTextArray = document.querySelectorAll(".input-text")
   newToyForm.addEventListener("submit", (e)=>{
     e.preventDefault()
-    const newToyObj ={
-      name: inputTextArray[0].value,
-      image: inputTextArray[1].value,
+    // console.log(newToyName)
+    const newToyName = newToyForm.name.value
+    const newToyImage = newToyForm.image.value
+
+    const newToyOb = {
+      name: newToyName,
+      image: newToyImage, 
       likes: 0
     }
-    uploadToys(newToyObj)
+    fetch("http://localhost:3000/toys", {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(newToyOb)
+      })
+     .then((resp)=>resp.json())
+     .then((data)=>{
+      addToys(data)
+     })
+    })
+    
+  fetch("http://localhost:3000/toys")
+  .then((resp)=> resp.json())
+  .then((toys)=>{
+    toys.forEach(addToys)
+  })
+
+function addToys(toy){
+  const toyCollection = document.getElementById("toy-collection")
+  const toyCard = document.createElement("div")
+  toyCard.className = "card"
+  toyCollection.append(toyCard)
+
+  //toy card info
+
+  //toy name
+  const toyName = document.createElement("h2")
+  toyName.innerText = toy.name
+
+  //toy image
+  const toyImage = document.createElement("img")
+  toyImage.src = toy.image
+  toyImage.className = "toy-avatar"
+
+  //toy likes
+  const toyLikes = document.createElement("p")
+  toyLikes.innerText = toy.likes + " likes"
+
+  //like Button
+  const likeButton = document.createElement("button")
+  likeButton.innerText = "Like"
+  likeButton.id = toy.id
+
+  toyCard.append(toyName,toyImage, toyLikes, likeButton)
+}
   })
   
 
-})
+
+
+  //new toy
+
+
+  // const  newToyObj = {
+ 
+  // }
+
+  // const configObj = {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //     "Accept": "application/json",
+  //   },
+  //   body: JSON.stringify(
+  //     newToyObj
+  //   )
+  // }
+
+  
+
+
+

@@ -47,6 +47,12 @@
       "name": "Little Green Men",
       "image": "http://www.pngmart.com/files/3/Toy-Story-Alien-PNG-File.png",
       "likes": 1
+    },
+    {
+      "name": "Amanda Ranero",
+      "image": "https://static.pokemonpets.com/images/monsters-images-800-800/5-Charmeleon.webp",
+      "likes": 0,
+      "id": 9
     }
   ]
 }
